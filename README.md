@@ -1,8 +1,6 @@
-# firstone Project
+# running a quarkus app in docker then in minikube service
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+First we will run our application in container Then we will use minikube to run it in a single-node Kubernetes cluster using minikube
 
 
 ## creating db container
@@ -47,3 +45,29 @@ from the image we created we run this command to create container
 docker run -i --rm -p 8080:8080 quarkus/firstone-jvm
 ```
 
+## Browsing our app 
+now our project works just fine. The link:
+http://localhost:8080/api/q/swagger-ui/
+
+
+## Using Kubernetes:
+first we start minikube service
+```shell script
+minikube start
+```
+Then we create the POD containing our bd
+```shell script
+kubectl run postgres-pod --image=wissembendaly/postgres-for-quarkus-app:latest --port=5432
+```
+
+Then we create the POD containing our app
+```shell script
+kubectl run quarkus-first-app --image=wissembendaly/quarkus-app-test --port=8080
+```
+
+if we didnt expose the port we can run this command to bind the first port on our local machine to the second one on the POD:
+```shell script
+kubectl port-forward quarkus-first-app 8080:8080
+```
+ finally we can navigate in our app on:
+ http://localhost:8080/api/q/swagger-ui/
